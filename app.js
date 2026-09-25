@@ -54,9 +54,54 @@ const LOVE_DATA = {
     "Tình yêu của anh dành cho em lớn hơn cả ngân hà 🌠",
     "Nguyện làm bóng râm che chở cho em suốt đời 🌳",
     "Anh chỉ muốn dành mọi điều tốt đẹp nhất cho em 🎀",
-    "My Soulmate - My Queen - Thị Hạnh 👑"
+    "My Soulmate - My Queen - Thị Hạnh 👑",
+    "Đêm rằm tháng Tám trăng sáng muôn nơi, lòng Chú Cuội chỉ hướng về Chị Hằng Hạnh Mèo 🌕",
+    "Nguyện làm Chú Cuội si tình, trọn đời nép bên bóng Chị Hằng Hạnh Molly 🪵💕",
+    "Dù cung trăng xa xôi, có em bên cạnh đời anh ấm áp tựa vầng dương 🏮",
+    "Trăng rằm đẹp nhất mùa thu, Hạnh Mèo đẹp nhất trọn đời lòng Long 🌸",
+    "Bánh trung thu ngọt ngào, nhưng nụ cười của Chị Hằng còn ngọt ngào gấp vạn lần 🥮",
+    "Vin Nest chắp cánh Chú Cuội & Chị Hằng - Tình nồng thiên thu 🕊️"
   ]
 };
+
+// Mid-Autumn Chị Hằng & Chú Cuội Photos
+const MID_AUTUMN_PHOTOS = [
+  {
+    url: 'images/hang_nga_1.jpg',
+    role: 'Chị Hằng Nga Kiêu Sa',
+    name: 'Thị Hạnh (Molly)',
+    badge: '🌙 Chị Hằng Nga • Thị Hạnh 🌸',
+    quote: 'Vẻ đẹp dịu dàng kiêu sa của Chị Hằng Hạnh Mèo làm lu mờ cả vầng trăng rằm tháng Tám!'
+  },
+  {
+    url: 'images/cuoi_hang_cute.jpg',
+    role: 'Chú Cuội & Chị Hằng Nhí Nhảnh',
+    name: 'Bruce Long & Hạnh Mèo',
+    badge: '🥰 Cuội Long & Hằng Mèo Đùa Vui 🐾',
+    quote: 'Chú Cuội Bruce Long nguyện trọn đời trọn kiếp ở bên trêu đùa, che chở và cưng chiều Chị Hằng Hạnh Mèo!'
+  },
+  {
+    url: 'images/hang_nga_grad.jpg',
+    role: 'Chị Hằng Molly Tỏa Nắng',
+    name: 'Thị Hạnh',
+    badge: '🎓 Chị Hằng Tỏa Nắng • Hạnh Molly 👑',
+    quote: 'Nụ cười tỏa nắng rạng rỡ như ánh trăng rằm, làm trái tim Chú Cuội tan chảy và say đắm mỗi ngày!'
+  },
+  {
+    url: 'images/cuoi_hang_dinner.jpg',
+    role: 'Cuội & Hằng Hẹn Hò Dưới Trăng',
+    name: 'Thái Bảo Luật & Thị Hạnh',
+    badge: '💑 Cuội & Hằng Hẹn Hò Trăng Rằm 🌹',
+    quote: 'Dù ở chốn nhân gian hay trên cung trăng, bình yên và hạnh phúc nhất vẫn là những giây phút bên cạnh em!'
+  },
+  {
+    url: 'images/cuoi_hang_party.jpg',
+    role: 'Đêm Rằm Đoàn Viên Viên Mãn',
+    name: 'Bruce Long & Thị Hạnh',
+    badge: '🥮 Đêm Trung Thu Đoàn Viên • Vin Nest 🥂',
+    quote: 'Chúc cho tình yêu của Chú Cuội & Chị Hằng luôn tròn đầy, ấm áp và ngọt ngào như chiếc bánh trung thu đêm rằm!'
+  }
+];
 
 // Combine all unique texts
 const ALL_TEXT_ITEMS = [
@@ -79,6 +124,12 @@ let fireworksParticles = [];
 let meteorsGroup;
 const METEORS_COUNT = 16;
 const meteors = [];
+
+// Mid-Autumn Moon & Photo Portals & Lanterns
+let moonGroup, superMoonMesh, moonLight;
+let photoPortals = [];
+let skyLanternsGroup;
+const SKY_LANTERNS_COUNT = 28;
 
 let currentShape = 'heart';
 let isAutoRotating = true;
@@ -138,6 +189,9 @@ function initThree() {
   createLongPhungEffect();
   createVinNestSwiftlets();
   createMeteorShower();
+  createSuperMoon();
+  createPhotoPortals();
+  createSkyLanterns();
 
   // Events
   window.addEventListener('resize', onWindowResize, false);
@@ -362,6 +416,315 @@ function updateMeteorShower(delta) {
     posArr[5] = tailPos.z;
     m.geometry.attributes.position.needsUpdate = true;
   }
+}
+
+// ============================================================================
+// 3.2. ĐÊM TRUNG THU: SIÊU TRĂNG TRÒN, CHỊ HẰNG - CHÚ CUỘI & ĐÈN TRỜI
+// ============================================================================
+function generateMoonTexture() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 1024;
+  canvas.height = 512;
+  const ctx = canvas.getContext('2d');
+
+  // Luminous golden-ivory base
+  const bgGrad = ctx.createLinearGradient(0, 0, 0, 512);
+  bgGrad.addColorStop(0, '#fffdf2');
+  bgGrad.addColorStop(0.5, '#f5e4bd');
+  bgGrad.addColorStop(1, '#ebd096');
+  ctx.fillStyle = bgGrad;
+  ctx.fillRect(0, 0, 1024, 512);
+
+  // Lunar Seas (Biển mặt trăng cổ điển)
+  const seas = [
+    { x: 300, y: 180, r: 130, a: 0.36 },
+    { x: 440, y: 220, r: 160, a: 0.38 },
+    { x: 590, y: 160, r: 120, a: 0.32 },
+    { x: 690, y: 270, r: 150, a: 0.35 },
+    { x: 260, y: 330, r: 95, a: 0.3 },
+    { x: 830, y: 210, r: 110, a: 0.28 },
+    { x: 480, y: 350, r: 120, a: 0.34 }
+  ];
+
+  seas.forEach(s => {
+    const grad = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r);
+    grad.addColorStop(0, `rgba(180, 142, 90, ${s.a})`);
+    grad.addColorStop(0.65, `rgba(205, 168, 115, ${s.a * 0.7})`);
+    grad.addColorStop(1, 'rgba(245, 228, 189, 0)');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  // Lunar Craters (Hố va chạm ánh trăng)
+  const craters = [
+    { x: 350, y: 380, r: 35 },
+    { x: 620, y: 390, r: 42 },
+    { x: 500, y: 110, r: 28 },
+    { x: 740, y: 140, r: 32 },
+    { x: 210, y: 210, r: 26 },
+    { x: 880, y: 320, r: 30 }
+  ];
+
+  craters.forEach(c => {
+    // Outer bright rays
+    const rayGrad = ctx.createRadialGradient(c.x, c.y, 0, c.x, c.y, c.r * 2.2);
+    rayGrad.addColorStop(0, 'rgba(255, 255, 240, 0.45)');
+    rayGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+    ctx.fillStyle = rayGrad;
+    ctx.beginPath();
+    ctx.arc(c.x, c.y, c.r * 2.2, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Crater pit
+    const pitGrad = ctx.createRadialGradient(c.x - c.r * 0.2, c.y - c.r * 0.2, c.r * 0.1, c.x, c.y, c.r);
+    pitGrad.addColorStop(0, 'rgba(160, 125, 80, 0.45)');
+    pitGrad.addColorStop(0.8, 'rgba(255, 250, 230, 0.8)');
+    pitGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+    ctx.fillStyle = pitGrad;
+    ctx.beginPath();
+    ctx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  // Grain speckles
+  for (let i = 0; i < 400; i++) {
+    const rx = Math.random() * 1024;
+    const ry = Math.random() * 512;
+    const rad = Math.random() * 2.5 + 1;
+    ctx.fillStyle = Math.random() < 0.5 ? 'rgba(255, 255, 255, 0.35)' : 'rgba(170, 135, 90, 0.25)';
+    ctx.beginPath();
+    ctx.arc(rx, ry, rad, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  return new THREE.CanvasTexture(canvas);
+}
+
+function createSuperMoon() {
+  moonGroup = new THREE.Group();
+
+  const moonTex = generateMoonTexture();
+  const moonGeom = new THREE.SphereGeometry(46, 64, 64);
+  const moonMat = new THREE.MeshStandardMaterial({
+    map: moonTex,
+    emissive: 0xffe899,
+    emissiveMap: moonTex,
+    emissiveIntensity: 0.65,
+    roughness: 0.85,
+    metalness: 0.1
+  });
+
+  superMoonMesh = new THREE.Mesh(moonGeom, moonMat);
+  moonGroup.add(superMoonMesh);
+
+  // Inner Golden Moon Halo
+  const haloCanvas1 = document.createElement('canvas');
+  haloCanvas1.width = 128;
+  haloCanvas1.height = 128;
+  const hCtx1 = haloCanvas1.getContext('2d');
+  const hGrad1 = hCtx1.createRadialGradient(64, 64, 20, 64, 64, 64);
+  hGrad1.addColorStop(0, 'rgba(255, 248, 220, 0.9)');
+  hGrad1.addColorStop(0.35, 'rgba(255, 220, 120, 0.55)');
+  hGrad1.addColorStop(0.7, 'rgba(255, 180, 80, 0.2)');
+  hGrad1.addColorStop(1, 'rgba(0,0,0,0)');
+  hCtx1.fillStyle = hGrad1;
+  hCtx1.fillRect(0, 0, 128, 128);
+
+  const haloTex1 = new THREE.CanvasTexture(haloCanvas1);
+  const haloMat1 = new THREE.SpriteMaterial({
+    map: haloTex1,
+    transparent: true,
+    opacity: 0.85,
+    blending: THREE.AdditiveBlending
+  });
+  const haloSprite1 = new THREE.Sprite(haloMat1);
+  haloSprite1.scale.set(160, 160, 1);
+  moonGroup.add(haloSprite1);
+
+  // Outer Ethereal Moonlight Corona
+  const haloCanvas2 = document.createElement('canvas');
+  haloCanvas2.width = 128;
+  haloCanvas2.height = 128;
+  const hCtx2 = haloCanvas2.getContext('2d');
+  const hGrad2 = hCtx2.createRadialGradient(64, 64, 30, 64, 64, 64);
+  hGrad2.addColorStop(0, 'rgba(255, 235, 180, 0.45)');
+  hGrad2.addColorStop(0.6, 'rgba(255, 190, 100, 0.18)');
+  hGrad2.addColorStop(1, 'rgba(0,0,0,0)');
+  hCtx2.fillStyle = hGrad2;
+  hCtx2.fillRect(0, 0, 128, 128);
+
+  const haloTex2 = new THREE.CanvasTexture(haloCanvas2);
+  const haloMat2 = new THREE.SpriteMaterial({
+    map: haloTex2,
+    transparent: true,
+    opacity: 0.6,
+    blending: THREE.AdditiveBlending
+  });
+  const haloSprite2 = new THREE.Sprite(haloMat2);
+  haloSprite2.scale.set(260, 260, 1);
+  moonGroup.add(haloSprite2);
+
+  // Warm Moonlight Point Light
+  moonLight = new THREE.PointLight(0xfff2bb, 3.2, 800);
+  moonGroup.add(moonLight);
+
+  // Position in romantic high background by default
+  moonGroup.position.set(0, 130, -180);
+  moonGroup.userData = {
+    targetPos: new THREE.Vector3(0, 130, -180)
+  };
+
+  scene.add(moonGroup);
+}
+
+function createPhotoLabelCanvas(badgeText) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 512;
+  canvas.height = 100;
+  const ctx = canvas.getContext('2d');
+
+  // Pill Background
+  ctx.fillStyle = 'rgba(24, 10, 36, 0.85)';
+  ctx.beginPath();
+  const x = 10, y = 10, w = 492, h = 80, r = 40;
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+  ctx.fill();
+
+  // Golden border
+  ctx.lineWidth = 4;
+  ctx.strokeStyle = 'rgba(255, 215, 0, 0.9)';
+  ctx.shadowColor = '#ffd700';
+  ctx.shadowBlur = 14;
+  ctx.stroke();
+
+  // Text
+  ctx.font = '700 28px "Mali", cursive, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#fffdf0';
+  ctx.shadowColor = '#ffbb00';
+  ctx.shadowBlur = 10;
+  ctx.fillText(badgeText, 256, 50);
+
+  return { canvas, width: canvas.width, height: canvas.height };
+}
+
+function createPhotoPortals() {
+  const portalContainer = new THREE.Group();
+  const textureLoader = new THREE.TextureLoader();
+
+  MID_AUTUMN_PHOTOS.forEach((item, index) => {
+    const cardGroup = new THREE.Group();
+
+    // 1. Photo Texture
+    const texture = textureLoader.load(item.url);
+    texture.minFilter = THREE.LinearFilter;
+
+    // 2. Photo Plane
+    const frameGeom = new THREE.PlaneGeometry(28, 36);
+    const photoMat = new THREE.MeshBasicMaterial({
+      map: texture,
+      side: THREE.DoubleSide
+    });
+    const photoMesh = new THREE.Mesh(frameGeom, photoMat);
+    cardGroup.add(photoMesh);
+
+    // 3. Ornate Golden Border Wireframe
+    const borderGeom = new THREE.EdgesGeometry(frameGeom);
+    const borderMat = new THREE.LineBasicMaterial({
+      color: 0xffd700,
+      linewidth: 3,
+      transparent: true,
+      opacity: 0.95
+    });
+    const borderLine = new THREE.LineSegments(borderGeom, borderMat);
+    cardGroup.add(borderLine);
+
+    // 4. Golden Halo Glow Plane Behind
+    const haloGeom = new THREE.PlaneGeometry(32, 40);
+    const haloMat = new THREE.MeshBasicMaterial({
+      color: 0xffaa00,
+      transparent: true,
+      opacity: 0.28,
+      side: THREE.DoubleSide
+    });
+    const haloMesh = new THREE.Mesh(haloGeom, haloMat);
+    haloMesh.position.z = -0.3;
+    cardGroup.add(haloMesh);
+
+    // 5. Label Canvas Sprite
+    const { canvas, width, height } = createPhotoLabelCanvas(item.badge);
+    const labelTex = new THREE.CanvasTexture(canvas);
+    const labelMat = new THREE.SpriteMaterial({ map: labelTex, transparent: true });
+    const labelSprite = new THREE.Sprite(labelMat);
+    labelSprite.scale.set(32, 32 * (height / width), 1);
+    labelSprite.position.set(0, -23, 0);
+    cardGroup.add(labelSprite);
+
+    // Initial position
+    const initAngle = (index / MID_AUTUMN_PHOTOS.length) * Math.PI * 2;
+    cardGroup.position.set(
+      Math.cos(initAngle) * 160,
+      Math.sin(index) * 35,
+      Math.sin(initAngle) * 160
+    );
+
+    cardGroup.userData = {
+      isPhotoPortal: true,
+      photoData: item,
+      orbitIndex: index,
+      floatOffset: index * 1.25,
+      targetPos: new THREE.Vector3().copy(cardGroup.position)
+    };
+
+    photoPortals.push(cardGroup);
+    portalContainer.add(cardGroup);
+  });
+
+  scene.add(portalContainer);
+}
+
+function createSkyLanterns() {
+  skyLanternsGroup = new THREE.Group();
+  const lanternGeom = new THREE.CylinderGeometry(1.6, 2.2, 4.2, 8);
+
+  for (let i = 0; i < SKY_LANTERNS_COUNT; i++) {
+    const isGold = Math.random() < 0.45;
+    const mat = new THREE.MeshStandardMaterial({
+      color: isGold ? 0xffbb00 : 0xff3311,
+      emissive: isGold ? 0xff8800 : 0xee2200,
+      emissiveIntensity: 0.9,
+      roughness: 0.3,
+      metalness: 0.1
+    });
+
+    const lantern = new THREE.Mesh(lanternGeom, mat);
+    const scale = 0.9 + Math.random() * 0.7;
+    lantern.scale.set(scale, scale, scale);
+
+    lantern.position.set(
+      (Math.random() - 0.5) * 360,
+      -220 + Math.random() * 440,
+      (Math.random() - 0.5) * 360
+    );
+
+    lantern.userData = {
+      riseSpeed: 0.45 + Math.random() * 0.55,
+      swayOffset: Math.random() * Math.PI * 2,
+      swaySpeed: 0.8 + Math.random() * 0.8
+    };
+
+    skyLanternsGroup.add(lantern);
+  }
+
+  scene.add(skyLanternsGroup);
 }
 
 // ============================================================================
@@ -785,6 +1148,52 @@ function applyShapeLayout(shapeType) {
       sprite.userData.waterfallRadius = radius;
       sprite.userData.waterfallAngle = angle;
       sprite.userData.currentPos.copy(target);
+    } else if (shapeType === 'moon') {
+      // Đêm Trung Thu: Vầng trăng rằm nguyệt quang và các dòng chữ tình yêu uốn lượn quanh vầng trăng
+      const angle = (i / count) * Math.PI * 4;
+      const radius = 95 + (i % 6) * 16;
+      const y = Math.sin(angle * 2) * 28 + (Math.random() - 0.5) * 12;
+      target.set(
+        Math.cos(angle) * radius,
+        y,
+        Math.sin(angle) * radius
+      );
+    }
+  }
+
+  // Update Moon and Photo Portals position
+  if (moonGroup) {
+    if (shapeType === 'moon') {
+      moonGroup.userData.targetPos.set(0, 0, 0); // Glide to center stage!
+    } else {
+      moonGroup.userData.targetPos.set(0, 130, -180); // Majestic high background
+    }
+  }
+
+  // Update Photo Portals
+  if (photoPortals && photoPortals.length > 0) {
+    if (shapeType === 'moon') {
+      // Arrange 5 photo frames in an elegant arc in front of the Super Moon
+      photoPortals.forEach((portal, idx) => {
+        const pAngle = -Math.PI * 0.55 + (idx / 4) * (Math.PI * 1.1);
+        const pRadius = 118;
+        const py = (idx % 2 === 0) ? -12 : 16;
+        portal.userData.targetPos.set(
+          Math.cos(pAngle) * pRadius,
+          py,
+          Math.sin(pAngle) * pRadius + 28
+        );
+      });
+    } else {
+      // In other shapes, float symmetrically in wider orbits
+      photoPortals.forEach((portal, idx) => {
+        const pAngle = (idx / photoPortals.length) * Math.PI * 2;
+        portal.userData.targetPos.set(
+          Math.cos(pAngle) * 160,
+          Math.sin(idx) * 40,
+          Math.sin(pAngle) * 160
+        );
+      });
     }
   }
 
@@ -1048,6 +1457,45 @@ function animate() {
   // 8. Meteor Shower Update (Mưa Sao Băng)
   updateMeteorShower(delta);
 
+  // 9. Mid-Autumn Moon, Photo Portals & Sky Lanterns Animation
+  if (moonGroup) {
+    moonGroup.position.lerp(moonGroup.userData.targetPos, 0.035);
+    if (superMoonMesh) {
+      superMoonMesh.rotation.y += 0.0015;
+    }
+  }
+
+  // Animate 5 Photo Portals (Chị Hằng & Chú Cuội)
+  for (let i = 0; i < photoPortals.length; i++) {
+    const portal = photoPortals[i];
+    const pu = portal.userData;
+
+    portal.position.lerp(pu.targetPos, 0.04);
+    const bob = Math.sin(elapsedTime * 1.4 + pu.floatOffset) * 1.8;
+    portal.position.y += bob * 0.04;
+
+    // Face camera for crisp view
+    portal.lookAt(camera.position);
+  }
+
+  // Animate Sky Lanterns (Đèn Trời bay bổng)
+  if (skyLanternsGroup) {
+    for (let i = 0; i < skyLanternsGroup.children.length; i++) {
+      const lantern = skyLanternsGroup.children[i];
+      const lu = lantern.userData;
+
+      lantern.position.y += lu.riseSpeed;
+      lantern.position.x += Math.sin(elapsedTime * lu.swaySpeed + lu.swayOffset) * 0.15;
+      lantern.rotation.z = Math.sin(elapsedTime * lu.swaySpeed + lu.swayOffset) * 0.1;
+
+      if (lantern.position.y > 240) {
+        lantern.position.y = -220;
+        lantern.position.x = (Math.random() - 0.5) * 360;
+        lantern.position.z = (Math.random() - 0.5) * 360;
+      }
+    }
+  }
+
   renderer.render(scene, camera);
 }
 
@@ -1059,7 +1507,7 @@ const mouse = new THREE.Vector2();
 
 function onPointerDown(event) {
   // Prevent raycast on UI clicks
-  if (event.target.closest('.main-controls') || event.target.closest('.top-nav') || event.target.closest('.modal-overlay')) {
+  if (event.target.closest('.main-controls') || event.target.closest('.top-nav') || event.target.closest('.modal-overlay') || event.target.closest('.playlist-dropdown')) {
     return;
   }
 
@@ -1067,17 +1515,52 @@ function onPointerDown(event) {
   mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
   raycaster.setFromCamera(mouse, camera);
-  const intersects = raycaster.intersectObjects(textSprites);
 
+  // 1. Raycast on Photo Portals (Chị Hằng & Chú Cuội)
+  if (photoPortals && photoPortals.length > 0) {
+    const photoMeshes = [];
+    photoPortals.forEach(p => {
+      p.traverse(child => {
+        if (child.isMesh || child.isSprite) photoMeshes.push(child);
+      });
+    });
+
+    const portalIntersects = raycaster.intersectObjects(photoMeshes);
+    if (portalIntersects.length > 0) {
+      let target = portalIntersects[0].object;
+      while (target && !target.userData?.isPhotoPortal && target.parent) {
+        target = target.parent;
+      }
+      if (target && target.userData?.photoData) {
+        triggerHeartFireworks(target.position);
+        showLoveModal(target.userData.photoData.caption, target.userData.photoData);
+        return;
+      }
+    }
+  }
+
+  // 2. Raycast on Super Moon
+  if (superMoonMesh && moonGroup && moonGroup.position.y > -100) {
+    const moonHits = raycaster.intersectObject(superMoonMesh);
+    if (moonHits.length > 0) {
+      triggerHeartFireworks(moonHits[0].point);
+      showLoveModal("🌕 Ánh Trăng Đêm Rằm tròn vành vạnh soi sáng tình yêu vĩnh cửu của Chú Cuội Bruce Long & Chị Hằng Thị Hạnh!");
+      return;
+    }
+  }
+
+  // 3. Raycast on Text Sprites
+  const intersects = raycaster.intersectObjects(textSprites);
   if (intersects.length > 0) {
     const clickedSprite = intersects[0].object;
     triggerHeartFireworks(clickedSprite.position);
     showLoveModal(clickedSprite.userData.text);
-  } else {
-    // Normal tap in 3D space: launch heart fireworks at tap point
-    const worldPoint = new THREE.Vector3(mouse.x * 60, mouse.y * 60, 40);
-    triggerHeartFireworks(worldPoint);
+    return;
   }
+
+  // 4. Normal tap in 3D space: launch heart fireworks at tap point
+  const worldPoint = new THREE.Vector3(mouse.x * 60, mouse.y * 60, 40);
+  triggerHeartFireworks(worldPoint);
 }
 
 function onWindowResize() {
@@ -1094,10 +1577,24 @@ const modalQuote = document.getElementById('modal-quote');
 const btnCloseModal = document.getElementById('modal-close');
 const btnRandomQuote = document.getElementById('btn-random-quote');
 const btnSendHeart = document.getElementById('btn-send-heart');
+const modalImgContainer = document.getElementById('modal-img-container');
+const modalImg = document.getElementById('modal-img');
+const modalImgCaption = document.getElementById('modal-img-caption');
+const modalStamp = document.querySelector('.modal-stamp');
 
-function showLoveModal(customText = null) {
-  const quote = customText || LOVE_DATA.quotes[Math.floor(Math.random() * LOVE_DATA.quotes.length)];
-  modalQuote.textContent = `"${quote}"`;
+function showLoveModal(customText = null, photoData = null) {
+  if (photoData) {
+    if (modalImgContainer) modalImgContainer.style.display = 'block';
+    if (modalImg) modalImg.src = photoData.url;
+    if (modalImgCaption) modalImgCaption.textContent = photoData.badge;
+    if (modalStamp) modalStamp.textContent = '🌕 ĐÊM TRUNG THU ĐOÀN VIÊN • CHÚ CUỘI & CHỊ HẰNG';
+    modalQuote.textContent = `"${photoData.caption}"`;
+  } else {
+    if (modalImgContainer) modalImgContainer.style.display = 'none';
+    if (modalStamp) modalStamp.textContent = '💌 FROM BRUCE LONG';
+    const quote = customText || LOVE_DATA.quotes[Math.floor(Math.random() * LOVE_DATA.quotes.length)];
+    modalQuote.textContent = `"${quote}"`;
+  }
   modal.classList.add('open');
 }
 
@@ -1141,7 +1638,9 @@ const statusMsgs = [
   "Thái Bảo Luật 💖 Thị Hạnh",
   "Vin Nest chắp cánh tình yêu 🕊️",
   "Bruce Long & Hạnh Molly ✨",
-  "Long Phụng Hòa Minh 🐉🕊️"
+  "Long Phụng Hòa Minh 🐉🕊️",
+  "🌕 Đêm Trung Thu Tuyệt Vời 🥮",
+  "Chú Cuội Bruce Long 💖 Chị Hằng Thị Hạnh 🌕"
 ];
 setInterval(() => {
   msgIndex = (msgIndex + 1) % statusMsgs.length;
