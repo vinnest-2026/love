@@ -676,21 +676,27 @@ html, body {
   margin-bottom: 20px;
 }
 
-/* Mid-Autumn Modal Image Box */
+/* Mid-Autumn Modal Image Box (Giữ nguyên kích thước gốc, không cắt góc) */
 .modal-img-box {
   width: 100%;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
   text-align: center;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .modal-img-box img {
-  width: 100%;
-  max-height: 280px;
-  object-fit: cover;
-  border-radius: 18px;
-  border: 2px solid rgba(255, 215, 0, 0.7);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7), 0 0 25px rgba(255, 215, 0, 0.35);
+  max-width: 100%;
+  max-height: 48vh;
+  width: auto;
+  height: auto;
+  object-fit: contain; /* Giữ nguyên 100% tỷ lệ hình gốc, không crop */
+  border-radius: 0;    /* Giữ nguyên góc vuông, tuyệt đối không bo tròn hay cắt góc */
+  border: 3px solid #ffd700;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 215, 0, 0.4);
+  background: #000;
 }
 
 .img-caption {
@@ -704,6 +710,35 @@ html, body {
   font-size: 13px;
   font-weight: 600;
   box-shadow: 0 0 15px rgba(255, 215, 0, 0.25);
+}
+
+.modal-photo-switcher {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+  width: 100%;
+}
+
+.photo-thumb-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  color: #fffdf0;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.photo-thumb-btn:hover, .photo-thumb-btn.active {
+  background: rgba(255, 215, 0, 0.25);
+  border-color: #ffd700;
+  color: #ffe680;
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.4);
+  transform: translateY(-2px);
 }
 
 .quote-text {

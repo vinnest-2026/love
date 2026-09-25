@@ -64,42 +64,57 @@ const LOVE_DATA = {
   ]
 };
 
-// Mid-Autumn Chị Hằng & Chú Cuội Photos
+// Mid-Autumn Chị Hằng & Chú Cuội Photos (Giữ nguyên kích thước gốc 100%)
 const MID_AUTUMN_PHOTOS = [
   {
     url: 'images/hang_nga_1.jpg',
     role: 'Chị Hằng Nga Kiêu Sa',
     name: 'Thị Hạnh (Molly)',
     badge: '🌙 Chị Hằng Nga • Thị Hạnh 🌸',
-    quote: 'Vẻ đẹp dịu dàng kiêu sa của Chị Hằng Hạnh Mèo làm lu mờ cả vầng trăng rằm tháng Tám!'
+    w: 34.5,
+    h: 46, // ratio 0.75 (1086 x 1448)
+    corner: 'top-left',
+    quote: 'Vẻ đẹp dịu dàng kiêu sa của Chị Hằng Hạnh Mèo làm lu mờ cả vầng trăng rằm tháng Tám! Vợ yêu ơi, em là nàng Hằng Nga đẹp nhất trần đời! 💖'
   },
   {
     url: 'images/cuoi_hang_cute.jpg',
     role: 'Chú Cuội & Chị Hằng Nhí Nhảnh',
     name: 'Bruce Long & Hạnh Mèo',
     badge: '🥰 Cuội Long & Hằng Mèo Đùa Vui 🐾',
-    quote: 'Chú Cuội Bruce Long nguyện trọn đời trọn kiếp ở bên trêu đùa, che chở và cưng chiều Chị Hằng Hạnh Mèo!'
+    w: 34.5,
+    h: 46, // ratio 0.75 (1080 x 1440)
+    corner: 'top-right',
+    quote: 'Dù vũ trụ bao la, Chú Cuội Bruce Long nguyện trọn đời trọn kiếp ở bên trêu đùa, che chở và cưng chiều Chị Hằng Hạnh Mèo! 💕'
   },
   {
     url: 'images/hang_nga_grad.jpg',
     role: 'Chị Hằng Molly Tỏa Nắng',
     name: 'Thị Hạnh',
     badge: '🎓 Chị Hằng Tỏa Nắng • Hạnh Molly 👑',
-    quote: 'Nụ cười tỏa nắng rạng rỡ như ánh trăng rằm, làm trái tim Chú Cuội tan chảy và say đắm mỗi ngày!'
+    w: 27.2,
+    h: 46, // ratio 0.591 (1284 x 2172)
+    corner: 'bottom-left',
+    quote: 'Nụ cười tỏa nắng rạng rỡ như ánh trăng rằm, người con gái tài sắc vẹn toàn luôn là niềm kiêu hãnh rực sáng của anh! 🌟'
   },
   {
     url: 'images/cuoi_hang_dinner.jpg',
     role: 'Cuội & Hằng Hẹn Hò Dưới Trăng',
     name: 'Thái Bảo Luật & Thị Hạnh',
     badge: '💑 Cuội & Hằng Hẹn Hò Trăng Rằm 🌹',
-    quote: 'Dù ở chốn nhân gian hay trên cung trăng, bình yên và hạnh phúc nhất vẫn là những giây phút bên cạnh em!'
+    w: 34.5,
+    h: 46, // ratio 0.75 (1536 x 2048)
+    corner: 'bottom-right',
+    quote: 'Dù ở chốn nhân gian hay trên cung trăng, bình yên và hạnh phúc nhất vẫn là những giây phút ngọt ngào bên cạnh em! 🥂'
   },
   {
     url: 'images/cuoi_hang_party.jpg',
     role: 'Đêm Rằm Đoàn Viên Viên Mãn',
     name: 'Bruce Long & Thị Hạnh',
     badge: '🥮 Đêm Trung Thu Đoàn Viên • Vin Nest 🥂',
-    quote: 'Chúc cho tình yêu của Chú Cuội & Chị Hằng luôn tròn đầy, ấm áp và ngọt ngào như chiếc bánh trung thu đêm rằm!'
+    w: 32.6,
+    h: 46, // ratio 0.709 (1189 x 1678)
+    corner: 'top-center',
+    quote: 'Nguyện trọn kiếp này cùng em sum vầy hạnh phúc, tình yêu ta mãi mãi tròn đầy và bền chặt như vầng trăng rằm tháng Tám! 🥮'
   }
 ];
 
@@ -128,6 +143,7 @@ const meteors = [];
 // Mid-Autumn Moon & Photo Portals & Lanterns
 let moonGroup, superMoonMesh, moonLight;
 let photoPortals = [];
+let photoPortalsContainer;
 let skyLanternsGroup;
 const SKY_LANTERNS_COUNT = 28;
 
@@ -427,37 +443,38 @@ function generateMoonTexture() {
   canvas.height = 512;
   const ctx = canvas.getContext('2d');
 
-  // Luminous golden-ivory base
+  // Warm Romantic Golden Harvest Moon (Vàng óng ấm áp, không chói, không trắng xóa)
   const bgGrad = ctx.createLinearGradient(0, 0, 0, 512);
-  bgGrad.addColorStop(0, '#fffdf2');
-  bgGrad.addColorStop(0.5, '#f5e4bd');
-  bgGrad.addColorStop(1, '#ebd096');
+  bgGrad.addColorStop(0, '#f59e0b');    // Warm amber gold
+  bgGrad.addColorStop(0.35, '#fbbf24'); // Luminous warm gold
+  bgGrad.addColorStop(0.7, '#d97706');  // Rich amber
+  bgGrad.addColorStop(1, '#b45309');    // Deep warm caramel
   ctx.fillStyle = bgGrad;
   ctx.fillRect(0, 0, 1024, 512);
 
-  // Lunar Seas (Biển mặt trăng cổ điển)
+  // Lunar Seas (Biển mặt trăng cổ điển - Vân Chú Cuội gốc đa)
   const seas = [
-    { x: 300, y: 180, r: 130, a: 0.36 },
-    { x: 440, y: 220, r: 160, a: 0.38 },
-    { x: 590, y: 160, r: 120, a: 0.32 },
-    { x: 690, y: 270, r: 150, a: 0.35 },
-    { x: 260, y: 330, r: 95, a: 0.3 },
-    { x: 830, y: 210, r: 110, a: 0.28 },
-    { x: 480, y: 350, r: 120, a: 0.34 }
+    { x: 300, y: 180, r: 130, a: 0.45 },
+    { x: 440, y: 220, r: 160, a: 0.48 },
+    { x: 590, y: 160, r: 120, a: 0.40 },
+    { x: 690, y: 270, r: 150, a: 0.42 },
+    { x: 260, y: 330, r: 95, a: 0.38 },
+    { x: 830, y: 210, r: 110, a: 0.35 },
+    { x: 480, y: 350, r: 120, a: 0.40 }
   ];
 
   seas.forEach(s => {
     const grad = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r);
-    grad.addColorStop(0, `rgba(180, 142, 90, ${s.a})`);
-    grad.addColorStop(0.65, `rgba(205, 168, 115, ${s.a * 0.7})`);
-    grad.addColorStop(1, 'rgba(245, 228, 189, 0)');
+    grad.addColorStop(0, `rgba(146, 64, 14, ${s.a})`);
+    grad.addColorStop(0.65, `rgba(180, 83, 9, ${s.a * 0.7})`);
+    grad.addColorStop(1, 'rgba(217, 119, 6, 0)');
     ctx.fillStyle = grad;
     ctx.beginPath();
     ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
     ctx.fill();
   });
 
-  // Lunar Craters (Hố va chạm ánh trăng)
+  // Lunar Craters (Hố va chạm ánh trăng vàng mềm mại)
   const craters = [
     { x: 350, y: 380, r: 35 },
     { x: 620, y: 390, r: 42 },
@@ -468,20 +485,20 @@ function generateMoonTexture() {
   ];
 
   craters.forEach(c => {
-    // Outer bright rays
-    const rayGrad = ctx.createRadialGradient(c.x, c.y, 0, c.x, c.y, c.r * 2.2);
-    rayGrad.addColorStop(0, 'rgba(255, 255, 240, 0.45)');
-    rayGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+    // Outer warm gold rays
+    const rayGrad = ctx.createRadialGradient(c.x, c.y, 0, c.x, c.y, c.r * 2.0);
+    rayGrad.addColorStop(0, 'rgba(254, 240, 138, 0.32)');
+    rayGrad.addColorStop(1, 'rgba(245, 158, 11, 0)');
     ctx.fillStyle = rayGrad;
     ctx.beginPath();
-    ctx.arc(c.x, c.y, c.r * 2.2, 0, Math.PI * 2);
+    ctx.arc(c.x, c.y, c.r * 2.0, 0, Math.PI * 2);
     ctx.fill();
 
     // Crater pit
     const pitGrad = ctx.createRadialGradient(c.x - c.r * 0.2, c.y - c.r * 0.2, c.r * 0.1, c.x, c.y, c.r);
-    pitGrad.addColorStop(0, 'rgba(160, 125, 80, 0.45)');
-    pitGrad.addColorStop(0.8, 'rgba(255, 250, 230, 0.8)');
-    pitGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+    pitGrad.addColorStop(0, 'rgba(120, 53, 15, 0.55)');
+    pitGrad.addColorStop(0.8, 'rgba(251, 191, 36, 0.35)');
+    pitGrad.addColorStop(1, 'rgba(217, 119, 6, 0)');
     ctx.fillStyle = pitGrad;
     ctx.beginPath();
     ctx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
@@ -489,93 +506,73 @@ function generateMoonTexture() {
   });
 
   // Grain speckles
-  for (let i = 0; i < 400; i++) {
+  for (let i = 0; i < 350; i++) {
     const rx = Math.random() * 1024;
     const ry = Math.random() * 512;
-    const rad = Math.random() * 2.5 + 1;
-    ctx.fillStyle = Math.random() < 0.5 ? 'rgba(255, 255, 255, 0.35)' : 'rgba(170, 135, 90, 0.25)';
+    const rad = Math.random() * 2.2 + 0.8;
+    ctx.fillStyle = Math.random() < 0.5 ? 'rgba(254, 240, 138, 0.25)' : 'rgba(146, 64, 14, 0.2)';
     ctx.beginPath();
     ctx.arc(rx, ry, rad, 0, Math.PI * 2);
     ctx.fill();
   }
 
-  return new THREE.CanvasTexture(canvas);
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.minFilter = THREE.LinearFilter;
+  return texture;
 }
 
 function createSuperMoon() {
   moonGroup = new THREE.Group();
 
   const moonTex = generateMoonTexture();
-  const moonGeom = new THREE.SphereGeometry(46, 64, 64);
+  const moonGeom = new THREE.SphereGeometry(40, 64, 64);
   const moonMat = new THREE.MeshStandardMaterial({
     map: moonTex,
-    emissive: 0xffe899,
-    emissiveMap: moonTex,
-    emissiveIntensity: 0.65,
     roughness: 0.85,
-    metalness: 0.1
+    metalness: 0.05,
+    emissive: 0x92400e, // warm deep amber, tuyệt đối không trắng xóa
+    emissiveMap: moonTex,
+    emissiveIntensity: 0.22 // dịu nhẹ, không chói lóa
   });
 
   superMoonMesh = new THREE.Mesh(moonGeom, moonMat);
   moonGroup.add(superMoonMesh);
 
-  // Inner Golden Moon Halo
-  const haloCanvas1 = document.createElement('canvas');
-  haloCanvas1.width = 128;
-  haloCanvas1.height = 128;
-  const hCtx1 = haloCanvas1.getContext('2d');
-  const hGrad1 = hCtx1.createRadialGradient(64, 64, 20, 64, 64, 64);
-  hGrad1.addColorStop(0, 'rgba(255, 248, 220, 0.9)');
-  hGrad1.addColorStop(0.35, 'rgba(255, 220, 120, 0.55)');
-  hGrad1.addColorStop(0.7, 'rgba(255, 180, 80, 0.2)');
-  hGrad1.addColorStop(1, 'rgba(0,0,0,0)');
-  hCtx1.fillStyle = hGrad1;
-  hCtx1.fillRect(0, 0, 128, 128);
+  // Vành hào quang trăng vàng dịu đặt PHÍA SAU mặt trăng (z = -12) để không che bề mặt
+  const haloCanvas = document.createElement('canvas');
+  haloCanvas.width = 128;
+  haloCanvas.height = 128;
+  const hCtx = haloCanvas.getContext('2d');
+  const hGrad = hCtx.createRadialGradient(64, 64, 38, 64, 64, 64);
+  hGrad.addColorStop(0, 'rgba(245, 158, 11, 0.55)');
+  hGrad.addColorStop(0.65, 'rgba(217, 119, 6, 0.22)');
+  hGrad.addColorStop(1, 'rgba(0,0,0,0)');
+  hCtx.fillStyle = hGrad;
+  hCtx.fillRect(0, 0, 128, 128);
 
-  const haloTex1 = new THREE.CanvasTexture(haloCanvas1);
-  const haloMat1 = new THREE.SpriteMaterial({
-    map: haloTex1,
+  const haloTex = new THREE.CanvasTexture(haloCanvas);
+  const haloMat = new THREE.SpriteMaterial({
+    map: haloTex,
     transparent: true,
-    opacity: 0.85,
+    opacity: 0.75,
     blending: THREE.AdditiveBlending
   });
-  const haloSprite1 = new THREE.Sprite(haloMat1);
-  haloSprite1.scale.set(160, 160, 1);
-  moonGroup.add(haloSprite1);
+  const haloSprite = new THREE.Sprite(haloMat);
+  haloSprite.scale.set(130, 130, 1);
+  haloSprite.position.z = -12;
+  moonGroup.add(haloSprite);
 
-  // Outer Ethereal Moonlight Corona
-  const haloCanvas2 = document.createElement('canvas');
-  haloCanvas2.width = 128;
-  haloCanvas2.height = 128;
-  const hCtx2 = haloCanvas2.getContext('2d');
-  const hGrad2 = hCtx2.createRadialGradient(64, 64, 30, 64, 64, 64);
-  hGrad2.addColorStop(0, 'rgba(255, 235, 180, 0.45)');
-  hGrad2.addColorStop(0.6, 'rgba(255, 190, 100, 0.18)');
-  hGrad2.addColorStop(1, 'rgba(0,0,0,0)');
-  hCtx2.fillStyle = hGrad2;
-  hCtx2.fillRect(0, 0, 128, 128);
-
-  const haloTex2 = new THREE.CanvasTexture(haloCanvas2);
-  const haloMat2 = new THREE.SpriteMaterial({
-    map: haloTex2,
-    transparent: true,
-    opacity: 0.6,
-    blending: THREE.AdditiveBlending
-  });
-  const haloSprite2 = new THREE.Sprite(haloMat2);
-  haloSprite2.scale.set(260, 260, 1);
-  moonGroup.add(haloSprite2);
-
-  // Warm Moonlight Point Light
-  moonLight = new THREE.PointLight(0xfff2bb, 3.2, 800);
+  // Ánh sáng trăng ấm vàng lãng mạn
+  moonLight = new THREE.PointLight(0xf59e0b, 1.2, 500);
   moonGroup.add(moonLight);
 
-  // Position in romantic high background by default
-  moonGroup.position.set(0, 130, -180);
+  moonGroup.position.set(0, 0, -25);
   moonGroup.userData = {
-    targetPos: new THREE.Vector3(0, 130, -180)
+    targetPos: new THREE.Vector3(0, 0, -25)
   };
 
+  // MẶC ĐỊNH ẨN: Chỉ hiện ở hiệu ứng Trung Thu!
+  moonGroup.visible = false;
   scene.add(moonGroup);
 }
 
@@ -617,18 +614,31 @@ function createPhotoLabelCanvas(badgeText) {
 }
 
 function createPhotoPortals() {
-  const portalContainer = new THREE.Group();
+  photoPortalsContainer = new THREE.Group();
   const textureLoader = new THREE.TextureLoader();
+
+  const CORNER_MAP = {
+    'top-left': new THREE.Vector3(-210, 95, 25),
+    'top-right': new THREE.Vector3(210, 95, 25),
+    'bottom-left': new THREE.Vector3(-210, -90, 25),
+    'bottom-right': new THREE.Vector3(210, -90, 25),
+    'top-center': new THREE.Vector3(0, 155, 10)
+  };
 
   MID_AUTUMN_PHOTOS.forEach((item, index) => {
     const cardGroup = new THREE.Group();
 
-    // 1. Photo Texture
+    // 1. Photo Texture (Giữ nguyên màu sắc gốc 100%, không bị chói)
     const texture = textureLoader.load(item.url);
     texture.minFilter = THREE.LinearFilter;
+    if (THREE.SRGBColorSpace) {
+      texture.colorSpace = THREE.SRGBColorSpace;
+    } else {
+      texture.encoding = THREE.sRGBEncoding;
+    }
 
-    // 2. Photo Plane
-    const frameGeom = new THREE.PlaneGeometry(28, 36);
+    // 2. Photo Plane (Kích thước gốc theo tỷ lệ, sắc nét, không bo góc/cắt góc)
+    const frameGeom = new THREE.PlaneGeometry(item.w, item.h);
     const photoMat = new THREE.MeshBasicMaterial({
       map: texture,
       side: THREE.DoubleSide
@@ -636,59 +646,47 @@ function createPhotoPortals() {
     const photoMesh = new THREE.Mesh(frameGeom, photoMat);
     cardGroup.add(photoMesh);
 
-    // 3. Ornate Golden Border Wireframe
+    // 3. Ornate Golden Border Wireframe (Vuông vắn, sang trọng)
     const borderGeom = new THREE.EdgesGeometry(frameGeom);
     const borderMat = new THREE.LineBasicMaterial({
       color: 0xffd700,
-      linewidth: 3,
+      linewidth: 2,
       transparent: true,
       opacity: 0.95
     });
     const borderLine = new THREE.LineSegments(borderGeom, borderMat);
     cardGroup.add(borderLine);
 
-    // 4. Golden Halo Glow Plane Behind
-    const haloGeom = new THREE.PlaneGeometry(32, 40);
-    const haloMat = new THREE.MeshBasicMaterial({
-      color: 0xffaa00,
-      transparent: true,
-      opacity: 0.28,
-      side: THREE.DoubleSide
-    });
-    const haloMesh = new THREE.Mesh(haloGeom, haloMat);
-    haloMesh.position.z = -0.3;
-    cardGroup.add(haloMesh);
-
-    // 5. Label Canvas Sprite
+    // 4. Label Sprite đặt ngay dưới khung tranh
     const { canvas, width, height } = createPhotoLabelCanvas(item.badge);
     const labelTex = new THREE.CanvasTexture(canvas);
     const labelMat = new THREE.SpriteMaterial({ map: labelTex, transparent: true });
     const labelSprite = new THREE.Sprite(labelMat);
-    labelSprite.scale.set(32, 32 * (height / width), 1);
-    labelSprite.position.set(0, -23, 0);
+    labelSprite.scale.set(30, 30 * (height / width), 1);
+    labelSprite.position.set(0, -(item.h / 2 + 5), 0);
     cardGroup.add(labelSprite);
 
-    // Initial position
-    const initAngle = (index / MID_AUTUMN_PHOTOS.length) * Math.PI * 2;
-    cardGroup.position.set(
-      Math.cos(initAngle) * 160,
-      Math.sin(index) * 35,
-      Math.sin(initAngle) * 160
-    );
+    // Vị trí nằm bên ngoài các dòng chữ ở các góc
+    const defaultPos = CORNER_MAP[item.corner] || new THREE.Vector3(0, 0, 0);
+    cardGroup.position.copy(defaultPos);
 
     cardGroup.userData = {
       isPhotoPortal: true,
       photoData: item,
-      orbitIndex: index,
+      photoIndex: index,
       floatOffset: index * 1.25,
-      targetPos: new THREE.Vector3().copy(cardGroup.position)
+      targetPos: defaultPos.clone()
     };
 
+    // MẶC ĐỊNH ẨN: Chỉ hiện ở hiệu ứng Trung Thu!
+    cardGroup.visible = false;
     photoPortals.push(cardGroup);
-    portalContainer.add(cardGroup);
+    photoPortalsContainer.add(cardGroup);
   });
 
-  scene.add(portalContainer);
+  // MẶC ĐỊNH ẨN: Chỉ hiện ở hiệu ứng Trung Thu!
+  photoPortalsContainer.visible = false;
+  scene.add(photoPortalsContainer);
 }
 
 function createSkyLanterns() {
@@ -699,8 +697,8 @@ function createSkyLanterns() {
     const isGold = Math.random() < 0.45;
     const mat = new THREE.MeshStandardMaterial({
       color: isGold ? 0xffbb00 : 0xff3311,
-      emissive: isGold ? 0xff8800 : 0xee2200,
-      emissiveIntensity: 0.9,
+      emissive: isGold ? 0xd97706 : 0xee2200,
+      emissiveIntensity: 0.8,
       roughness: 0.3,
       metalness: 0.1
     });
@@ -724,6 +722,8 @@ function createSkyLanterns() {
     skyLanternsGroup.add(lantern);
   }
 
+  // MẶC ĐỊNH ẨN: Chỉ hiện ở hiệu ứng Trung Thu!
+  skyLanternsGroup.visible = false;
   scene.add(skyLanternsGroup);
 }
 
@@ -1149,10 +1149,10 @@ function applyShapeLayout(shapeType) {
       sprite.userData.waterfallAngle = angle;
       sprite.userData.currentPos.copy(target);
     } else if (shapeType === 'moon') {
-      // Đêm Trung Thu: Vầng trăng rằm nguyệt quang và các dòng chữ tình yêu uốn lượn quanh vầng trăng
+      // Đêm Trung Thu: Vầng trăng ở tâm, các dòng chữ tình yêu uốn lượn gọn gàng quanh vầng trăng (Bán kính 80 - 128)
       const angle = (i / count) * Math.PI * 4;
-      const radius = 95 + (i % 6) * 16;
-      const y = Math.sin(angle * 2) * 28 + (Math.random() - 0.5) * 12;
+      const radius = 80 + (i % 5) * 12;
+      const y = Math.sin(angle * 2) * 20 + (Math.random() - 0.5) * 6;
       target.set(
         Math.cos(angle) * radius,
         y,
@@ -1161,40 +1161,51 @@ function applyShapeLayout(shapeType) {
     }
   }
 
-  // Update Moon and Photo Portals position
-  if (moonGroup) {
-    if (shapeType === 'moon') {
-      moonGroup.userData.targetPos.set(0, 0, 0); // Glide to center stage!
-    } else {
-      moonGroup.userData.targetPos.set(0, 130, -180); // Majestic high background
+  // Cập nhật hiển thị các thành phần Đêm Trung Thu:
+  // CHỈ HIỆN Ở HIỆU ỨNG TRUNG THU, CÁC HIỆU ỨNG KHÁC GIỮ NGUYÊN NHƯ CŨ!
+  if (shapeType === 'moon') {
+    if (moonGroup) {
+      moonGroup.visible = true;
+      moonGroup.userData.targetPos.set(0, 0, -25);
     }
-  }
+    if (skyLanternsGroup) {
+      skyLanternsGroup.visible = true;
+    }
+    if (photoPortalsContainer) {
+      photoPortalsContainer.visible = true;
+    }
 
-  // Update Photo Portals
-  if (photoPortals && photoPortals.length > 0) {
-    if (shapeType === 'moon') {
-      // Arrange 5 photo frames in an elegant arc in front of the Super Moon
-      photoPortals.forEach((portal, idx) => {
-        const pAngle = -Math.PI * 0.55 + (idx / 4) * (Math.PI * 1.1);
-        const pRadius = 118;
-        const py = (idx % 2 === 0) ? -12 : 16;
-        portal.userData.targetPos.set(
-          Math.cos(pAngle) * pRadius,
-          py,
-          Math.sin(pAngle) * pRadius + 28
-        );
-      });
-    } else {
-      // In other shapes, float symmetrically in wider orbits
-      photoPortals.forEach((portal, idx) => {
-        const pAngle = (idx / photoPortals.length) * Math.PI * 2;
-        portal.userData.targetPos.set(
-          Math.cos(pAngle) * 160,
-          Math.sin(idx) * 40,
-          Math.sin(pAngle) * 160
-        );
-      });
+    // 5 Khung ảnh nằm hoàn toàn BÊN NGOÀI các dòng chữ, ở 4 góc và đỉnh màn hình
+    const CORNER_POSITIONS = [
+      new THREE.Vector3(-210, 95, 25),   // Top-Left (Chị Hằng Thị Hạnh)
+      new THREE.Vector3(210, 95, 25),    // Top-Right (Chú Cuội & Chị Hằng nhí nhảnh)
+      new THREE.Vector3(-210, -90, 25),  // Bottom-Left (Chị Hằng tốt nghiệp)
+      new THREE.Vector3(210, -90, 25),   // Bottom-Right (Cuội & Hằng hẹn hò)
+      new THREE.Vector3(0, 155, 10)      // Top-Center (Tiệc đêm rằm đoàn viên)
+    ];
+
+    photoPortals.forEach((portal, idx) => {
+      portal.visible = true;
+      const cPos = CORNER_POSITIONS[idx % CORNER_POSITIONS.length];
+      portal.userData.targetPos.copy(cPos);
+      if (portal.position.lengthSq() < 10) {
+        portal.position.copy(cPos);
+      }
+    });
+  } else {
+    // ẨN HOÀN TOÀN TRĂNG, ĐÈN TRỜI & HÌNH ẢNH TRONG TẤT CẢ HIỆU ỨNG KHÁC
+    if (moonGroup) {
+      moonGroup.visible = false;
     }
+    if (skyLanternsGroup) {
+      skyLanternsGroup.visible = false;
+    }
+    if (photoPortalsContainer) {
+      photoPortalsContainer.visible = false;
+    }
+    photoPortals.forEach(portal => {
+      portal.visible = false;
+    });
   }
 
   // Update 3D hearts for waterfall mode
@@ -1457,41 +1468,44 @@ function animate() {
   // 8. Meteor Shower Update (Mưa Sao Băng)
   updateMeteorShower(delta);
 
-  // 9. Mid-Autumn Moon, Photo Portals & Sky Lanterns Animation
-  if (moonGroup) {
-    moonGroup.position.lerp(moonGroup.userData.targetPos, 0.035);
-    if (superMoonMesh) {
-      superMoonMesh.rotation.y += 0.0015;
+  // 9. Mid-Autumn Moon, Photo Portals & Sky Lanterns Animation (CHỈ CHẠY KHI Ở HIỆU ỨNG TRUNG THU)
+  if (currentShape === 'moon') {
+    if (moonGroup && moonGroup.visible) {
+      moonGroup.position.lerp(moonGroup.userData.targetPos, 0.035);
+      if (superMoonMesh) {
+        superMoonMesh.rotation.y += 0.0015;
+      }
     }
-  }
 
-  // Animate 5 Photo Portals (Chị Hằng & Chú Cuội)
-  for (let i = 0; i < photoPortals.length; i++) {
-    const portal = photoPortals[i];
-    const pu = portal.userData;
+    // Animate 5 Photo Portals (Chị Hằng & Chú Cuội)
+    for (let i = 0; i < photoPortals.length; i++) {
+      const portal = photoPortals[i];
+      if (!portal.visible) continue;
+      const pu = portal.userData;
 
-    portal.position.lerp(pu.targetPos, 0.04);
-    const bob = Math.sin(elapsedTime * 1.4 + pu.floatOffset) * 1.8;
-    portal.position.y += bob * 0.04;
+      portal.position.lerp(pu.targetPos, 0.04);
+      const bob = Math.sin(elapsedTime * 1.4 + pu.floatOffset) * 1.2;
+      portal.position.y += bob * 0.025;
 
-    // Face camera for crisp view
-    portal.lookAt(camera.position);
-  }
+      // Face camera for crisp view
+      portal.lookAt(camera.position);
+    }
 
-  // Animate Sky Lanterns (Đèn Trời bay bổng)
-  if (skyLanternsGroup) {
-    for (let i = 0; i < skyLanternsGroup.children.length; i++) {
-      const lantern = skyLanternsGroup.children[i];
-      const lu = lantern.userData;
+    // Animate Sky Lanterns (Đèn Trời bay bổng)
+    if (skyLanternsGroup && skyLanternsGroup.visible) {
+      for (let i = 0; i < skyLanternsGroup.children.length; i++) {
+        const lantern = skyLanternsGroup.children[i];
+        const lu = lantern.userData;
 
-      lantern.position.y += lu.riseSpeed;
-      lantern.position.x += Math.sin(elapsedTime * lu.swaySpeed + lu.swayOffset) * 0.15;
-      lantern.rotation.z = Math.sin(elapsedTime * lu.swaySpeed + lu.swayOffset) * 0.1;
+        lantern.position.y += lu.riseSpeed;
+        lantern.position.x += Math.sin(elapsedTime * lu.swaySpeed + lu.swayOffset) * 0.15;
+        lantern.rotation.z = Math.sin(elapsedTime * lu.swaySpeed + lu.swayOffset) * 0.1;
 
-      if (lantern.position.y > 240) {
-        lantern.position.y = -220;
-        lantern.position.x = (Math.random() - 0.5) * 360;
-        lantern.position.z = (Math.random() - 0.5) * 360;
+        if (lantern.position.y > 240) {
+          lantern.position.y = -220;
+          lantern.position.x = (Math.random() - 0.5) * 360;
+          lantern.position.z = (Math.random() - 0.5) * 360;
+        }
       }
     }
   }
@@ -1516,13 +1530,15 @@ function onPointerDown(event) {
 
   raycaster.setFromCamera(mouse, camera);
 
-  // 1. Raycast on Photo Portals (Chị Hằng & Chú Cuội)
-  if (photoPortals && photoPortals.length > 0) {
+  // 1. Raycast on Photo Portals (CHỈ KHI ĐANG Ở HIỆU ỨNG TRUNG THU)
+  if (currentShape === 'moon' && photoPortals && photoPortals.length > 0) {
     const photoMeshes = [];
     photoPortals.forEach(p => {
-      p.traverse(child => {
-        if (child.isMesh || child.isSprite) photoMeshes.push(child);
-      });
+      if (p.visible) {
+        p.traverse(child => {
+          if (child.isMesh || child.isSprite) photoMeshes.push(child);
+        });
+      }
     });
 
     const portalIntersects = raycaster.intersectObjects(photoMeshes);
@@ -1533,18 +1549,21 @@ function onPointerDown(event) {
       }
       if (target && target.userData?.photoData) {
         triggerHeartFireworks(target.position);
-        showLoveModal(target.userData.photoData.caption, target.userData.photoData);
+        showLoveModal(target.userData.photoData.quote, target.userData.photoData);
         return;
       }
     }
   }
 
-  // 2. Raycast on Super Moon
-  if (superMoonMesh && moonGroup && moonGroup.position.y > -100) {
+  // 2. Raycast on Super Moon (KÍCH VÀO MẶT TRĂNG -> HIỆN HIỆU ỨNG CÁC HÌNH ẢNH & LỜI CHÚC)
+  if (currentShape === 'moon' && superMoonMesh && moonGroup && moonGroup.visible) {
     const moonHits = raycaster.intersectObject(superMoonMesh);
     if (moonHits.length > 0) {
       triggerHeartFireworks(moonHits[0].point);
-      showLoveModal("🌕 Ánh Trăng Đêm Rằm tròn vành vạnh soi sáng tình yêu vĩnh cửu của Chú Cuội Bruce Long & Chị Hằng Thị Hạnh!");
+      triggerHeartFireworks(new THREE.Vector3(-45, 25, 0));
+      triggerHeartFireworks(new THREE.Vector3(45, 25, 0));
+      triggerHeartFireworks(new THREE.Vector3(0, -35, 0));
+      showMoonCelebrationModal();
       return;
     }
   }
@@ -1580,17 +1599,61 @@ const btnSendHeart = document.getElementById('btn-send-heart');
 const modalImgContainer = document.getElementById('modal-img-container');
 const modalImg = document.getElementById('modal-img');
 const modalImgCaption = document.getElementById('modal-img-caption');
+const modalPhotoSwitcher = document.getElementById('modal-photo-switcher');
 const modalStamp = document.querySelector('.modal-stamp');
+
+function setupPhotoSwitcher(activeIdx = 0) {
+  if (!modalPhotoSwitcher) return;
+  modalPhotoSwitcher.innerHTML = '';
+  modalPhotoSwitcher.style.display = 'flex';
+
+  MID_AUTUMN_PHOTOS.forEach((photo, idx) => {
+    const btn = document.createElement('button');
+    btn.className = `photo-thumb-btn ${idx === activeIdx ? 'active' : ''}`;
+    btn.textContent = photo.badge.split('•')[0].trim();
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      displayPhotoInModal(idx);
+    });
+    modalPhotoSwitcher.appendChild(btn);
+  });
+}
+
+function displayPhotoInModal(idx) {
+  const photo = MID_AUTUMN_PHOTOS[idx];
+  if (!photo) return;
+
+  if (modalImgContainer) modalImgContainer.style.display = 'flex';
+  if (modalImg) modalImg.src = photo.url;
+  if (modalImgCaption) modalImgCaption.textContent = photo.badge;
+  if (modalStamp) modalStamp.textContent = '🌕 ĐÊM TRUNG THU ĐOÀN VIÊN • CHÚ CUỘI & CHỊ HẰNG';
+  modalQuote.textContent = `"${photo.quote}"`;
+
+  if (modalPhotoSwitcher) {
+    const btns = modalPhotoSwitcher.querySelectorAll('.photo-thumb-btn');
+    btns.forEach((b, bIdx) => {
+      b.classList.toggle('active', bIdx === idx);
+    });
+  }
+}
+
+function showMoonCelebrationModal() {
+  setupPhotoSwitcher(1); // Mặc định mở ảnh Cuội Long & Hằng Mèo đáng yêu
+  displayPhotoInModal(1);
+  modalQuote.textContent = '"🌕 Chúc Vợ Yêu Hạnh Mèo một mùa Trung Thu ngập tràn hạnh phúc và yêu thương! Dù trải qua bao mùa trăng, Chú Cuội Bruce Long mãi mãi hướng về ánh trăng Chị Hằng của đời mình! Nguyện kiếp này và muôn kiếp sau, tình yêu chúng ta luôn tròn đầy và tỏa sáng như vầng trăng rằm tháng Tám! 🥮💖"';
+  modal.classList.add('open');
+}
 
 function showLoveModal(customText = null, photoData = null) {
   if (photoData) {
-    if (modalImgContainer) modalImgContainer.style.display = 'block';
-    if (modalImg) modalImg.src = photoData.url;
-    if (modalImgCaption) modalImgCaption.textContent = photoData.badge;
-    if (modalStamp) modalStamp.textContent = '🌕 ĐÊM TRUNG THU ĐOÀN VIÊN • CHÚ CUỘI & CHỊ HẰNG';
-    modalQuote.textContent = `"${photoData.caption}"`;
+    const photoIdx = MID_AUTUMN_PHOTOS.findIndex(p => p.url === photoData.url);
+    const validIdx = photoIdx >= 0 ? photoIdx : 0;
+    setupPhotoSwitcher(validIdx);
+    displayPhotoInModal(validIdx);
+    if (customText) modalQuote.textContent = `"${customText}"`;
   } else {
     if (modalImgContainer) modalImgContainer.style.display = 'none';
+    if (modalPhotoSwitcher) modalPhotoSwitcher.style.display = 'none';
     if (modalStamp) modalStamp.textContent = '💌 FROM BRUCE LONG';
     const quote = customText || LOVE_DATA.quotes[Math.floor(Math.random() * LOVE_DATA.quotes.length)];
     modalQuote.textContent = `"${quote}"`;
